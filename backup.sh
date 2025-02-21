@@ -1,24 +1,27 @@
-#/bin/bash
+#!/bin/bash
 
-HOST_DIR="/root/backup"
-DIST_DIR="/root/dist/dist"
-LOG_FILE="/root/true.log"
-ERROR_LOG="/root/error.log"
-REMOTE_HOST="user@server"
+HOST="/root"
+HOST_DIR="data"
+DIST="/root"
+DIST_DIR="dist"
 SSH_KEY="/.ssh/id_rsa"
+REMOTE_HOST="user@server"
+FILE_BACKUP="dist.tar.gz"
 
-fun () {
-cd "$HOST_DIR"
-tar -czvf "$DIST_DIR.tar.gz" . 
-        if [ $? -eq 0 ];
-        then 
-                echo "file succusseded  $(date)" > "$LOG_FILE"
-                #scp -i "$SSH_KEY" "$DIST_DIR" "$REMOTE_HOST"):/backup  
-        else
-                echo "failled $(date)" > "$ERROR_LOG"
-        fi
-rm -r "$HOST_DIR"
-mkdir "$HOST_DIR"
+
+backup (){
+    cd "$HOST"
+    tar -czvf "$FILE_BACKUP" "$HOST_DIR"
+    if [ $? -eq 0 ];
+    then
+    mv "$FILE_BACKUP" "$DIST"/"$DIST_DIR"
+    #scp -i "$SSH_KEY" "$DIST"/$"DIST_DIR" "$REMOTE_HOST":/backup  
+    echo "backup succeeded in $(date)">backup.log 
+    rm -r "$HOST"/"$HOST_DIR"
+    mkdir "$HOST"/"$HOST_DIR"
+    else 
+    echo "backup failed in $(date)">error.log
+    fi 
 }
 
-fun
+backup
